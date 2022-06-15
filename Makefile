@@ -152,6 +152,7 @@ UPROGS=\
 	$U/_sleep\
 	$U/_pingpong\
 	$U/_clear\
+	$U/_segv\
 
 
 ifeq ($(LAB),syscall)
@@ -217,6 +218,9 @@ qemu: $K/kernel fs.img
 qemu-gdb: $K/kernel .gdbinit fs.img
 	@echo "*** Now run 'gdb' in another window." 1>&2
 	$(QEMU) $(QEMUOPTS) -S $(QEMUGDB)
+
+debug:
+	@gnome-terminal -t xv6-qemu-gdb -- make qemu-gdb && cgdb -d gdb-multiarch
 
 ##
 ##  FOR testing lab grading script
