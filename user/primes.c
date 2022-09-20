@@ -88,7 +88,10 @@ sieve(int fd)
   }
   if(r != 0)
     exit(1);
-  close(fd_new[1]);
-  if(wait(0) < 0)
-    exit(1);
+  if(pid != 0)
+  {
+    close(fd_new[1]);
+    if(wait(0) < 0)
+      exit(1);
+  }
 }
