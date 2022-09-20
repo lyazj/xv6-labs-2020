@@ -40,7 +40,7 @@ xargs(int argc0, char *argv0[], char *buf)
     if(argc == MAXARG)
     {
       fprintf(2, "xargs: too many arguments\n");
-      exit(-1);
+      exit(1);
     }
     argv[argc++] = buf;
     buf = token_end(buf);
@@ -60,19 +60,19 @@ run(char *argv[])
   if((pid = fork()) < 0)
   {
     fprintf(2, "xargs: fork failed\n");
-    exit(-1);
+    exit(1);
   }
   if(pid == 0)  /* child */
   {
     exec(argv[0], argv);
     fprintf(2, "xargs: exec %s failed\n", argv[0]);
-    exit(-1);
+    exit(1);
   }
   /* parent */
   if(wait(0) < 0)
   {
     fprintf(2, "xargs: wait failed\n");
-    exit(-1);
+    exit(1);
   }
 }
 

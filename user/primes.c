@@ -41,7 +41,7 @@ generate(int fd, int max)
   int i;
 
   if(max < 2)
-    exit(-1);
+    exit(1);
   for(i = 2; i <= max; ++i)
     feed(fd, i);
 }
@@ -61,7 +61,7 @@ sieve(int fd)
   int p, i, r;
 
   if((read(fd, &p, sizeof p)) != (int)sizeof p)
-    exit(-1);
+    exit(1);
   printf("prime %d\n", p);
 
   while((r = read(fd, &i, sizeof i)) == (int)sizeof i)
@@ -71,9 +71,9 @@ sieve(int fd)
     if(pid == 0)
     {
       if(pipe(fd_new) < 0)
-        exit(-1);
+        exit(1);
       if((pid = fork()) < 0)
-        exit(-1);
+        exit(1);
       if(pid != 0)  /* parent */
         close(fd_new[0]);
       else  /* child */
