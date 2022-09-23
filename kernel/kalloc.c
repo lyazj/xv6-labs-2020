@@ -9,6 +9,8 @@
 #include "riscv.h"
 #include "defs.h"
 
+uint64 freepages;
+
 void freerange(void *pa_start, void *pa_end);
 
 extern char end[]; // first address after kernel.
@@ -59,6 +61,7 @@ kfree(void *pa)
   acquire(&kmem.lock);
   r->next = kmem.freelist;
   kmem.freelist = r;
+  ++freepages;
   release(&kmem.lock);
 }
 
@@ -73,10 +76,25 @@ kalloc(void)
   acquire(&kmem.lock);
   r = kmem.freelist;
   if(r)
+  {
     kmem.freelist = r->next;
+    --freepages;
+  }
   release(&kmem.lock);
 
   if(r)
     memset((char*)r, 5, PGSIZE); // fill with junk
   return (void*)r;
+}
+
+// Return the number of free pages.
+uint64
+kfreepages(void)
+{
+  uint64 pages;
+
+  acquire(&kmem.lock);
+  pages = freepages;
+  release(&kmem.lock);
+  return pages;
 }
